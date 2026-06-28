@@ -1,0 +1,641 @@
+[
+  {
+    "id": "sip-01",
+    "section": "SIP",
+    "topic": "Control plane vs media plane",
+    "front": "What is the key mental model for SIP versus RTP in a voice call?",
+    "back": "SIP sets up and tears down the session, while RTP carries the actual audio or video. A call can connect successfully even if media fails.",
+    "tags": ["sip", "rtp", "mental-model"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "sip-02",
+    "section": "SIP",
+    "topic": "Basic SIP call flow",
+    "front": "What is the usual high-level SIP call lifecycle from registration to hangup?",
+    "back": "REGISTER, INVITE, 180 Ringing, 200 OK, ACK, RTP media, then BYE and 200 OK for teardown.",
+    "tags": ["sip", "call-flow", "registration"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "sip-03",
+    "section": "SIP",
+    "topic": "SDP role",
+    "front": "What does SDP describe in a SIP call?",
+    "back": "SDP is the media contract inside SIP. It tells the other side what codecs to use, where to send media, and which direction the stream should flow.",
+    "tags": ["sip", "sdp", "media-negotiation"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "sip-04",
+    "section": "SIP",
+    "topic": "Why audio can fail",
+    "front": "Why can SIP signaling succeed while the call still has no audio?",
+    "back": "Because signaling and media often take different paths. SIP can complete while RTP is blocked, misrouted, or advertised to an unreachable address.",
+    "tags": ["sip", "rtp", "nat", "troubleshooting"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "sip-05",
+    "section": "SIP",
+    "topic": "Core headers",
+    "front": "What do Via, Contact, Call-ID, and CSeq each help SIP do?",
+    "back": "Via records the hop path, Contact gives a direct address for future requests, Call-ID identifies the dialog, and CSeq keeps requests ordered.",
+    "tags": ["sip", "headers", "dialog"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "sip-06",
+    "section": "SIP",
+    "topic": "SIP URI and registration",
+    "front": "What does a SIP URI identify and why is REGISTER important?",
+    "back": "A SIP URI identifies a user or endpoint, such as sip:6001@pbx.local. REGISTER tells the network how to reach that endpoint.",
+    "tags": ["sip", "uri", "register"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "sip-07",
+    "section": "SIP",
+    "topic": "TLS versus SRTP",
+    "front": "What is the security difference between TLS and SRTP in a VoIP system?",
+    "back": "TLS protects SIP signaling and the SDP carried inside it. SRTP protects the actual RTP media stream.",
+    "tags": ["sip", "tls", "srtp", "security"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "sip-08",
+    "section": "SIP",
+    "topic": "Session Border Controller",
+    "front": "What problem does an SBC solve in a SIP system?",
+    "back": "An SBC sits at the edge of the voice network to control, secure, and normalize SIP and RTP traffic across trust boundaries.",
+    "tags": ["sip", "sbc", "security", "interconnect"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "sip-09",
+    "section": "SIP",
+    "topic": "Troubleshooting order",
+    "front": "What is the best layered order for troubleshooting a bad call?",
+    "back": "Check registration, then SIP call flow, then SDP negotiation, then RTP or SRTP media path, and finally TLS or firewall behavior.",
+    "tags": ["sip", "troubleshooting", "media"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "sip-10",
+    "section": "SIP",
+    "topic": "Dialog identity",
+    "front": "How do From, To, tags, and Route help SIP maintain dialog state?",
+    "back": "From and To identify the logical caller and callee, tags distinguish dialog legs, and Route or Record-Route keep proxies in the signaling path.",
+    "tags": ["sip", "dialog", "routing"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "voip-01",
+    "section": "VoIP",
+    "topic": "Voice platform roles",
+    "front": "How do PBX, IP-PBX, B2BUA, SBC, and PSTN differ?",
+    "back": "A PBX routes calls, an IP-PBX does that over IP, a B2BUA terminates and recreates two SIP legs, an SBC controls boundary traffic, and the PSTN is the legacy phone network.",
+    "tags": ["voip", "pbx", "sbc", "pstn"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "voip-02",
+    "section": "VoIP",
+    "topic": "Codecs",
+    "front": "When should you think about G.711, G.722, and Opus?",
+    "back": "They are common voice codecs. G.711 is simple telephony audio, G.722 is wideband voice, and Opus is a modern adaptive codec that handles changing network conditions well.",
+    "tags": ["voip", "codecs", "audio"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "voip-03",
+    "section": "VoIP",
+    "topic": "Media quality tools",
+    "front": "What do RTP, RTCP, MOS, and R-factor tell you about a call?",
+    "back": "RTP carries media, RTCP reports quality, MOS is a user-experience score, and R-factor is an objective voice-quality metric.",
+    "tags": ["voip", "rtp", "quality"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "voip-04",
+    "section": "VoIP",
+    "topic": "DTMF",
+    "front": "Why is RFC 4733 important for DTMF in VoIP?",
+    "back": "It carries touch-tone digits as RTP events instead of relying on in-band audio, which is more reliable for IVRs and call-control systems.",
+    "tags": ["voip", "dtmf", "ivr", "rtp"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "voip-05",
+    "section": "VoIP",
+    "topic": "Quality metrics",
+    "front": "What is the difference between QoS and QoE in VoIP?",
+    "back": "QoS is the network's treatment of traffic. QoE is the human user's experience of the call.",
+    "tags": ["voip", "qos", "qoe", "quality"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "voip-06",
+    "section": "VoIP",
+    "topic": "Call records",
+    "front": "How do CDR and CEL differ in a voice system?",
+    "back": "CDR summarizes calls with fields like caller, callee, duration, and disposition. CEL logs more detailed event-level actions during the call.",
+    "tags": ["voip", "cdr", "cel", "operations"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "voip-07",
+    "section": "VoIP",
+    "topic": "Traffic KPIs",
+    "front": "What do ASR, ACD, NER, and PDD each help diagnose?",
+    "back": "ASR shows answer rate, ACD shows average call duration, NER shows completion efficiency, and PDD shows how long users wait before progress or ringing.",
+    "tags": ["voip", "kpi", "routing", "quality"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "voip-08",
+    "section": "VoIP",
+    "topic": "Caller and dialed identity",
+    "front": "How do DNIS, ANI, caller ID, and CLID differ?",
+    "back": "DNIS identifies the number dialed, ANI identifies the calling number, and caller ID or CLID is the displayed caller identity presented to the recipient.",
+    "tags": ["voip", "routing", "identity"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "voip-09",
+    "section": "VoIP",
+    "topic": "Dial plan control",
+    "front": "What do LCR, ARS, CoS, CoR, IVR, and MWI do in a phone system?",
+    "back": "LCR and ARS choose outbound routes, CoS grants calling rights, CoR restricts calling, IVR handles menu logic, and MWI tells the user voicemail is waiting.",
+    "tags": ["voip", "dial-plan", "routing", "ivr"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "voip-10",
+    "section": "VoIP",
+    "topic": "VoIP numbers",
+    "front": "Why do E.164 numbers and DID matter in VoIP interconnects?",
+    "back": "E.164 is the standard international phone-number format, and DID is the public number that routes inbound PSTN calls into the voice system.",
+    "tags": ["voip", "numbers", "pstn", "routing"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "net-01",
+    "section": "Networking",
+    "topic": "TCP/IP layers",
+    "front": "How does the TCP/IP model organize network communication?",
+    "back": "Application protocols run on top, transport handles end-to-end delivery, the internet layer routes packets between networks, and the link layer moves frames locally.",
+    "tags": ["networking", "tcpip", "layers"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "net-02",
+    "section": "Networking",
+    "topic": "Switching vs routing",
+    "front": "What is the difference between switching and routing?",
+    "back": "Switching forwards frames inside a local Layer 2 domain. Routing forwards packets between Layer 3 networks.",
+    "tags": ["networking", "switching", "routing"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "net-03",
+    "section": "Networking",
+    "topic": "Addressing basics",
+    "front": "How do IP, IPv4, IPv6, CIDR, ARP, NDP, MAC, and NIC fit together?",
+    "back": "IP addresses and routes packets, IPv4 and IPv6 are address families, CIDR describes subnets, ARP and NDP map network addresses to local neighbors, and MAC and NIC are the link-layer identity and interface.",
+    "tags": ["networking", "ip", "arp", "ipv6"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "net-04",
+    "section": "Networking",
+    "topic": "Transport protocols",
+    "front": "When would you choose TCP, UDP, QUIC, or SCTP?",
+    "back": "TCP gives reliable ordered delivery, UDP is lightweight and connectionless, QUIC provides modern encrypted transport over UDP, and SCTP adds multi-streaming and multi-homing features.",
+    "tags": ["networking", "tcp", "udp", "quic"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "net-05",
+    "section": "Networking",
+    "topic": "MTU and translation",
+    "front": "Why do PMTUD, DF, MSS, NAT-T, and PAT matter for RTC traffic?",
+    "back": "They shape packet size and traversal through networks and NAT. Bad MTU discovery or translation can break SIP setup or degrade media delivery.",
+    "tags": ["networking", "mtu", "nat", "transport"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "net-06",
+    "section": "Networking",
+    "topic": "Access control",
+    "front": "How do ACLs, firewalls, NGFWs, IDS, IPS, and DMZs differ?",
+    "back": "ACLs are permit or deny rules, firewalls enforce policy, NGFWs inspect more deeply, IDS detects suspicious activity, IPS blocks it, and a DMZ isolates exposed services.",
+    "tags": ["networking", "security", "firewall", "dmz"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "net-07",
+    "section": "Networking",
+    "topic": "Identity and remote access",
+    "front": "What do AAA, RADIUS, TACACS+, 802.1X, NAC, IPsec, IKE, SA, and zero trust cover?",
+    "back": "AAA handles authentication, authorization, and accounting. RADIUS and TACACS+ implement access control. 802.1X and NAC gate network entry. IPsec, IKE, and SA establish protected tunnels. Zero trust assumes every access needs verification.",
+    "tags": ["networking", "access-control", "ipsec", "zero-trust"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "net-08",
+    "section": "Networking",
+    "topic": "Routing and path selection",
+    "front": "What do OSPF, BGP, VRF, MPLS, ECMP, TTL, and ICMP each contribute?",
+    "back": "OSPF handles internal routing, BGP handles interdomain routing, VRFs isolate routing tables, MPLS adds label-based forwarding, ECMP uses equal-cost paths, TTL prevents loops, and ICMP supports diagnostics and control.",
+    "tags": ["networking", "routing", "bgp", "ospf"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "net-09",
+    "section": "Networking",
+    "topic": "Wireless LAN basics",
+    "front": "How do WLAN, AP, SSID, BSSID, MIMO, OFDM, CSMA/CA, WPA2, WPA3, and DFS fit together?",
+    "back": "A WLAN is the Wi-Fi network, the AP serves clients, SSID is the network name, BSSID is the AP radio identifier, MIMO and OFDM improve radio efficiency, CSMA/CA manages airtime, WPA2 and WPA3 secure access, and DFS avoids radar conflicts.",
+    "tags": ["networking", "wifi", "wireless", "security"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "net-10",
+    "section": "Networking",
+    "topic": "Observability tools",
+    "front": "What do SNMP, MIB, OID, Syslog, NetFlow, sFlow, IPFIX, SPAN, TAP, PCAP, SLO, and SLA tell you?",
+    "back": "They cover counters, log messages, flow summaries, mirrored traffic, packet captures, and service targets. Together they give visibility into network behavior and reliability.",
+    "tags": ["networking", "monitoring", "pcap", "observability"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "queue-01",
+    "section": "Queueing Theory",
+    "topic": "Arrival, service, utilization",
+    "front": "What do lambda, mu, and rho mean in queueing theory?",
+    "back": "Lambda is arrival rate, mu is service rate, and rho is utilization, usually lambda divided by mu. As utilization approaches 1, delay tends to grow rapidly.",
+    "tags": ["queueing", "utilization", "latency"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "queue-02",
+    "section": "Queueing Theory",
+    "topic": "Core queue terms",
+    "front": "What is the difference between a queue, a server, the system, and backlog?",
+    "back": "The queue is the waiting line, the server is the resource doing the work, the system is the queue plus the server, and backlog is the accumulated waiting work.",
+    "tags": ["queueing", "definitions", "buffering"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "queue-03",
+    "section": "Queueing Theory",
+    "topic": "Delay vocabulary",
+    "front": "What do Wq, W, Lq, and L mean?",
+    "back": "Wq is waiting time in the queue, W is total time in the system, Lq is average queue length, and L is average number of jobs in the system.",
+    "tags": ["queueing", "delay", "latency"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "queue-04",
+    "section": "Queueing Theory",
+    "topic": "Little's law",
+    "front": "State Little's Law and explain what it means in real systems.",
+    "back": "Little's Law says L = lambda times W for a stable system. If average arrival rate stays steady, more delay implies more accumulated work in the system.",
+    "tags": ["queueing", "littles-law", "backlog"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "queue-05",
+    "section": "Queueing Theory",
+    "topic": "Tail latency and jitter",
+    "front": "Why do p95, p99, jitter, and head-of-line blocking matter more than averages for RTC?",
+    "back": "Real-time users feel bad moments more than averages. Jitter and head-of-line blocking create bursty delay spikes that disrupt voice, video, and control loops.",
+    "tags": ["queueing", "tail-latency", "jitter", "rtc"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "queue-06",
+    "section": "Queueing Theory",
+    "topic": "Common queue models",
+    "front": "What do M/M/1 and M/M/c tell you at a glance?",
+    "back": "M/M/1 means random arrivals, random service, and one server. M/M/c means the same arrival and service assumptions but with c parallel servers.",
+    "tags": ["queueing", "models", "mm1"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "queue-07",
+    "section": "Queueing Theory",
+    "topic": "Kendall notation",
+    "front": "What does Kendall notation A/S/c/K/N/D describe?",
+    "back": "It names the arrival process, service process, number of servers, system capacity, population size, and service discipline in a queueing model.",
+    "tags": ["queueing", "kendall", "notation"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "queue-08",
+    "section": "Queueing Theory",
+    "topic": "Queue disciplines",
+    "front": "Why do FIFO, priority, WFQ, drop-tail, and freshness-aware policies matter?",
+    "back": "They decide what gets served next. For real-time systems, serving the freshest or highest-priority work can matter more than strictly preserving arrival order.",
+    "tags": ["queueing", "scheduling", "freshness"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "queue-09",
+    "section": "Queueing Theory",
+    "topic": "Age of information",
+    "front": "How is freshness different from ordinary delay?",
+    "back": "Freshness measures how recent the newest delivered update is. A packet can have low delay but still deliver stale information if the receiver already has newer state.",
+    "tags": ["queueing", "age-of-information", "freshness"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "queue-10",
+    "section": "Queueing Theory",
+    "topic": "Poisson and memoryless intuition",
+    "front": "What is the intuition behind Poisson arrivals and Markovian behavior?",
+    "back": "Poisson describes random arrivals at an average rate, while Markovian means the model cares about the current state rather than the full detailed history.",
+    "tags": ["queueing", "poisson", "markov"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "lte-01",
+    "section": "LTE/5G/Wireless",
+    "topic": "Core architecture",
+    "front": "How do UE, RAN, eNodeB, gNodeB, EPC, and 5GC fit together?",
+    "back": "The UE is the endpoint, the RAN is the radio access network, eNodeB and gNodeB are LTE and 5G base stations, and EPC or 5GC provide the core functions that move traffic and manage mobility.",
+    "tags": ["wireless", "lte", "5g", "architecture"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "lte-02",
+    "section": "LTE/5G/Wireless",
+    "topic": "SA versus NSA",
+    "front": "What is the difference between standalone and non-standalone 5G?",
+    "back": "Standalone 5G uses the 5G core directly. Non-standalone 5G uses LTE assistance for control or anchoring while still using 5G radio access.",
+    "tags": ["wireless", "5g", "architecture"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "lte-03",
+    "section": "LTE/5G/Wireless",
+    "topic": "Spectrum and duplexing",
+    "front": "How do RF, band, channel, bandwidth, OFDM, OFDMA, TDD, FDD, FR1, FR2, and mmWave relate?",
+    "back": "RF is the radio medium, bands define allowed frequencies, channels and bandwidth are the usable slices, OFDM and OFDMA organize subcarriers, TDD and FDD describe duplexing, and FR1 or FR2 indicate lower or higher 5G spectrum ranges.",
+    "tags": ["wireless", "rf", "ofdm", "spectrum"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "lte-04",
+    "section": "LTE/5G/Wireless",
+    "topic": "Signal quality metrics",
+    "front": "What do RSSI, RSRP, RSRQ, SNR, and SINR tell you?",
+    "back": "They are measurements of received power and quality. SINR is especially useful because it reflects both noise and interference.",
+    "tags": ["wireless", "signal-quality", "sinr"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "lte-05",
+    "section": "LTE/5G/Wireless",
+    "topic": "Adaptation and retransmission",
+    "front": "How do CQI, MCS, BLER, HARQ, path loss, fading, and interference interact?",
+    "back": "CQI feeds channel quality back to the network, MCS chooses the coding and modulation rate, BLER tracks errors, HARQ retries failed blocks, and path loss, fading, and interference drive how aggressive the link can be.",
+    "tags": ["wireless", "harq", "coding", "retransmission"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "lte-06",
+    "section": "LTE/5G/Wireless",
+    "topic": "Performance metrics",
+    "front": "Why are latency, jitter, packet loss, and throughput all needed to evaluate wireless RTC?",
+    "back": "Throughput shows delivered rate, but latency, jitter, and loss determine whether real-time traffic such as voice or control stays usable.",
+    "tags": ["wireless", "performance", "rtc"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "lte-07",
+    "section": "LTE/5G/Wireless",
+    "topic": "QoS classes",
+    "front": "What do QCI, 5QI, GBR, non-GBR, bearer, PDU session, and network slicing represent?",
+    "back": "They are LTE or 5G traffic treatment concepts. They decide what quality and capacity a flow gets and how separate services can share infrastructure.",
+    "tags": ["wireless", "qos", "5g", "bearer"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "lte-08",
+    "section": "LTE/5G/Wireless",
+    "topic": "Wireless as queueing",
+    "front": "Why do wireless systems behave like queues?",
+    "back": "Packets wait for grants, retransmissions, scheduler decisions, and a usable channel. As load or radio quality changes, the service rate changes too.",
+    "tags": ["wireless", "queueing", "latency"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "lte-09",
+    "section": "LTE/5G/Wireless",
+    "topic": "Variable service rate",
+    "front": "Why is the wireless service rate not constant?",
+    "back": "It changes with signal quality, modulation, bandwidth, scheduler behavior, active users, interference, mobility, and retransmissions.",
+    "tags": ["wireless", "scheduling", "service-rate"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "lte-10",
+    "section": "LTE/5G/Wireless",
+    "topic": "Scheduler view",
+    "front": "What is a wireless scheduler doing from a queueing perspective?",
+    "back": "It is choosing who gets service next, how much capacity they get, and which traffic class should be prioritized under contention.",
+    "tags": ["wireless", "scheduler", "queueing"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "rf-01",
+    "section": "RF/MANET",
+    "topic": "RF basics",
+    "front": "How do frequency, wavelength, bandwidth, channel, spectrum, and the ISM band relate?",
+    "back": "Frequency is cycles per second, wavelength is the physical size of one cycle, bandwidth is the width of the slice, a channel is the assigned slice, spectrum is the overall range, and ISM is a common unlicensed band family.",
+    "tags": ["rf", "spectrum", "wireless"],
+    "difficulty": "beginner"
+  },
+  {
+    "id": "rf-02",
+    "section": "RF/MANET",
+    "topic": "Link budget",
+    "front": "What do dB, dBm, EIRP, path loss, fade margin, and link budget describe?",
+    "back": "They are the accounting terms for gains and losses in an RF path. A link budget helps predict whether the received signal will stay above the receiver threshold.",
+    "tags": ["rf", "link-budget", "power"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "rf-03",
+    "section": "RF/MANET",
+    "topic": "Signal quality",
+    "front": "What is the difference between SNR, SINR, and receiver sensitivity?",
+    "back": "SNR measures signal relative to noise, SINR also includes interference, and receiver sensitivity is the lowest power level the receiver can decode reliably.",
+    "tags": ["rf", "quality", "sinr"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "rf-04",
+    "section": "RF/MANET",
+    "topic": "Antenna and propagation",
+    "front": "Why do antenna pattern, LOS, NLOS, multipath, Fresnel clearance, and polarization matter?",
+    "back": "They shape how much usable energy arrives at the receiver. Even with good power, obstruction, misalignment, reflections, and polarization mismatch can weaken the link.",
+    "tags": ["rf", "propagation", "antennas"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "rf-05",
+    "section": "RF/MANET",
+    "topic": "Modulation and coding",
+    "front": "How do BPSK, QPSK, QAM, FEC, BER, PER, and adaptive modulation fit together?",
+    "back": "Higher-order modulation carries more bits but needs better RF conditions. FEC adds redundancy, BER and PER measure errors, and adaptive modulation changes the scheme based on channel quality.",
+    "tags": ["rf", "modulation", "coding"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "rf-06",
+    "section": "RF/MANET",
+    "topic": "MANET fundamentals",
+    "front": "What is a MANET and what makes it different from infrastructure Wi-Fi or cellular?",
+    "back": "A MANET is a self-forming mobile ad hoc network where nodes can forward traffic for each other and the topology changes with movement and link quality.",
+    "tags": ["manet", "mesh", "mobility"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "rf-07",
+    "section": "RF/MANET",
+    "topic": "Routing in a mesh",
+    "front": "What do proactive, reactive, and hybrid routing try to balance?",
+    "back": "They trade off route freshness, control overhead, and discovery delay. ETX, hop count, and convergence time are common routing concerns.",
+    "tags": ["manet", "routing", "etx"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "rf-08",
+    "section": "RF/MANET",
+    "topic": "Airtime and reliability",
+    "front": "Why do airtime, contention, hidden nodes, retransmissions, route flaps, bottlenecks, and partitions matter in a mesh?",
+    "back": "They determine how much useful data can move through a shared radio network and how stable the end-to-end path remains while nodes compete for the medium.",
+    "tags": ["manet", "airtime", "reliability"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "rf-09",
+    "section": "RF/MANET",
+    "topic": "Tactical networking",
+    "front": "What do relay nodes, edge nodes, density, mobility patterns, jamming, LPI, LPD, EMCON, SATCOM, and BLOS suggest about a tactical network?",
+    "back": "They describe how a network survives movement, threat, and poor connectivity. Tactical systems care about survivability, detectability, range, and mission continuity.",
+    "tags": ["manet", "tactical", "security"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "cyber-01",
+    "section": "Cybersecurity",
+    "topic": "Threat model",
+    "front": "What do the CIA triad, threat model, attack surface, trust boundary, control plane, data plane, and blast radius describe?",
+    "back": "They define what must be protected, who can attack it, where the boundaries are, which traffic is control versus media, and how far damage can spread.",
+    "tags": ["security", "threat-model", "rtc"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "cyber-02",
+    "section": "Cybersecurity",
+    "topic": "Identity and access",
+    "front": "How do authentication, authorization, accounting, AAA, MFA, RBAC, least privilege, and zero trust differ?",
+    "back": "Authentication proves identity, authorization grants actions, accounting records activity, AAA combines those three, MFA adds another proof factor, RBAC uses role-based permissions, least privilege limits exposure, and zero trust requires verification at every step.",
+    "tags": ["security", "identity", "access-control"],
+    "difficulty": "intermediate"
+  },
+  {
+    "id": "cyber-03",
+    "section": "Cybersecurity",
+    "topic": "Cryptographic building blocks",
+    "front": "What do encryption, integrity, authentication tags, key exchange, symmetric keys, asymmetric keys, PFS, PKI, certificates, and key rotation do?",
+    "back": "They protect confidentiality, detect tampering, establish shared secrets, validate identity, preserve forward secrecy, and keep long-lived systems from depending on the same key forever.",
+    "tags": ["security", "crypto", "tls"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "cyber-04",
+    "section": "Cybersecurity",
+    "topic": "SIP and media security",
+    "front": "How do SIP over TLS, SRTP, SIPS, SDES, DTLS-SRTP, mTLS, digest auth, replay protection, and downgrade attacks relate?",
+    "back": "They are the major ways RTC systems secure signaling and media. TLS and mTLS protect signaling, SRTP protects media, and replay or downgrade attacks try to weaken those protections.",
+    "tags": ["security", "sip", "srtp", "tls"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "cyber-05",
+    "section": "Cybersecurity",
+    "topic": "Network defenses",
+    "front": "How do firewalls, ACLs, DMZs, IDS, IPS, NDR, microsegmentation, allowlists, deny-by-default, and egress filtering work together?",
+    "back": "They control which services are reachable, isolate exposed systems, detect and block bad traffic, reduce lateral movement, and keep outbound traffic constrained.",
+    "tags": ["security", "defense", "network"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "cyber-06",
+    "section": "Cybersecurity",
+    "topic": "Availability attacks",
+    "front": "How do DoS, DDoS, TDoS, SIP floods, INVITE floods, registration floods, RTP floods, rate limiting, and backpressure relate?",
+    "back": "They are all ways to exhaust finite resources so communications cannot stay available. Rate limiting and backpressure help keep the arrival rate below service capacity.",
+    "tags": ["security", "dos", "availability"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "cyber-07",
+    "section": "Cybersecurity",
+    "topic": "Wireless threats",
+    "front": "What do jamming, spoofing, eavesdropping, replay, rogue APs, evil twins, deauthentication attacks, and RF fingerprinting mean?",
+    "back": "They describe ways to disrupt or impersonate wireless communications, intercept traffic, force disconnects, or help identify unauthorized radios.",
+    "tags": ["security", "wireless", "rf"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "cyber-08",
+    "section": "Cybersecurity",
+    "topic": "MANET attacks",
+    "front": "What do blackhole, grayhole, wormhole, Sybil, route poisoning, trust anchors, key distribution, and compromised nodes imply for a MANET?",
+    "back": "They are route, identity, and trust attacks on a moving mesh network. A compromised or fake node can redirect, drop, or distort traffic and topology.",
+    "tags": ["security", "manet", "routing"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "cyber-09",
+    "section": "Cybersecurity",
+    "topic": "RTC abuse",
+    "front": "How do call hijacking, toll fraud, SPIT, caller ID spoofing, media injection, RTP scanning, codec abuse, DTMF leakage, recording abuse, and metadata leakage threaten RTC?",
+    "back": "They target identity, cost, privacy, and the media itself. Even encrypted systems can still leak metadata or be abused through signaling and application logic.",
+    "tags": ["security", "rtc", "abuse"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "cyber-10",
+    "section": "Cybersecurity",
+    "topic": "Vulnerability management",
+    "front": "Why do vulnerability, exploit, CVE, CVSS, patching, firmware, EOL, hardening, config drift, and SBOM matter together?",
+    "back": "They describe the full lifecycle of known weaknesses, how severe they are, how they get fixed, and how to keep long-lived RTC systems from drifting into insecure states.",
+    "tags": ["security", "vulnerabilities", "operations"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "cyber-11",
+    "section": "Cybersecurity",
+    "topic": "Monitoring and detection",
+    "front": "How do logging, SIEM, SOC, telemetry, anomaly detection, IOC, IOA, PCAP, baseline behavior, and alert fatigue fit into defense?",
+    "back": "They provide the visibility needed to spot attacks and failures. Baselines make anomalies obvious, while PCAP and logs help prove what happened.",
+    "tags": ["security", "monitoring", "pcap", "detection"],
+    "difficulty": "advanced"
+  },
+  {
+    "id": "cyber-12",
+    "section": "Cybersecurity",
+    "topic": "Incident response and resilience",
+    "front": "What do IR, triage, containment, eradication, recovery, forensics, RCA, playbooks, runbooks, resilience, redundancy, failover, HA, RTO, RPO, and SPOF tell you?",
+    "back": "They describe how to respond to an incident and how to design systems that keep working when parts fail. Strong RTC systems need both recovery procedures and redundant paths.",
+    "tags": ["security", "incident-response", "resilience"],
+    "difficulty": "advanced"
+  }
+]
